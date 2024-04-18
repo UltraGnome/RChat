@@ -8,7 +8,9 @@ const LOCAL: &str = "127.0.0.1:6000";
 const MSG_SIZE: usize = 32;
 
 fn main() {
+
     let mut client = TcpStream::connect(LOCAL).expect("Could not connect to RChat server.  Is the server running?");
+
     client.set_nonblocking(true).expect("Failed to initiate non-blocking");
 
     let (tx, rx) = mpsc::channel::<String>();
@@ -32,6 +34,7 @@ fn main() {
                 let mut buff = msg.clone().into_bytes();
                 buff.resize(MSG_SIZE, 0);
                 client.write_all(&buff).expect("Writing to RChat server socket failed");
+
                 println!("Message sent {:?}", msg);
             },
             Err(TryRecvError::Empty) => (),
@@ -49,4 +52,5 @@ fn main() {
         if msg == ":quit" || tx.send(msg).is_err() { break }
     }
     println!("Exiting RChat Client");
+
 }
