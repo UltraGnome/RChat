@@ -8,7 +8,7 @@ const LOCAL: &str = "127.0.0.1:6000";
 const MSG_SIZE: usize = 32;
 
 fn main() {
-    let server = TcpListener::bind(LOCAL).expect("Listener failed to bind");
+    let server = TcpListener::bind(LOCAL).expect("RChat server: Listener failed to bind");
     server.set_nonblocking(true).expect("Failed to initialize non-blocking");
 
     let mut clients = vec![];
@@ -27,7 +27,7 @@ fn main() {
                         let msg = String::from_utf8(msg).expect("Invalid utf8 message");
 
                         println!("{}: {:?}", addr, msg);
-                        tx.send(msg).expect("Failed to send message to rx");
+                        tx.send(msg).expect("Failed to send message to receiver");
                     },
                     Err(ref err) if err.kind() == ErrorKind::WouldBlock => (),
                     Err(_) => {
